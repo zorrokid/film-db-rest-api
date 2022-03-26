@@ -4,6 +4,10 @@ To run environment with docker-compose
 
     docker-compose up -d
 
+To tear down
+
+    docker-compose down
+
 # Build docker container image
 
 To build docker container image
