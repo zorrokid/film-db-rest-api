@@ -13,28 +13,32 @@ import (
 	"github.com/zorrokid/film-db-rest-api/data"
 	"github.com/zorrokid/film-db-rest-api/database"
 	"github.com/zorrokid/film-db-rest-api/handlers"
+	"github.com/zorrokid/film-db-rest-api/middleware"
 )
 
 func main() {
 
 	logger := log.New(os.Stdout, "movies-api ", log.LstdFlags)
-	db, err := database.Connect(logger)
 
-	if err != nil {
-		logger.Fatal(err)
-	}
+	db := database.NewDatabase(logger)
 
 	var wait time.Duration
 
 	flag.DurationVar(&wait, "graceful-timeout", time.Second*15, "the duration for which the server gracefully wait for existing connections to finish")
 	flag.Parse()
-	r := mux.NewRouter()
 
 	//repository := data.NewMoviesTestDataRepository(logger)
 	repository := data.NewMoviesDataRepository(logger, db)
+
 	moviesHandler := handlers.NewMovies(logger, repository)
 
-	r.HandleFunc("/movies", moviesHandler.GetMovies)
+	r := mux.NewRouter()
+	getRouter := r.Methods(http.MethodGet).Subrouter()
+	getRouter.HandleFunc("/movies", moviesHandler.GetMovies)
+
+	postRouter := r.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/movies", moviesHandler.AddMovie)
+	postRouter.Use(middleware.ProcessMovie)
 
 	srv := &http.Server{
 		Addr: "0.0.0.0:8080",

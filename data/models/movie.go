@@ -3,6 +3,8 @@ package models
 import (
 	"encoding/json"
 	"io"
+
+	"gorm.io/gorm"
 )
 
 type Movies []*Movie
@@ -13,6 +15,11 @@ func (m *Movies) ToJson(w io.Writer) error {
 }
 
 type Movie struct {
-	ID   int
-	Name string
+	gorm.Model
+	Name string `json:"name"`
+}
+
+func (m *Movie) FromJson(r io.Reader) error {
+	decoder := json.NewDecoder(r)
+	return decoder.Decode(m)
 }

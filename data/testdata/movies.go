@@ -6,10 +6,12 @@ func GetMovies() models.Movies {
 	return movieList
 }
 
+func AddMovie(movie *models.Movie) {
+	movieList = append(movieList, movie)
+}
+
 var movieList = []*models.Movie{{
-	ID:   1,
 	Name: "Zorro",
 }, {
-	ID:   2,
 	Name: "Star Wars",
 }}

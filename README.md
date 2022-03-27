@@ -1,5 +1,9 @@
 # Running with docker-compose
 
+To build environment 
+
+    docker-compose build
+
 To run environment with docker-compose
 
     docker-compose up -d
@@ -20,4 +24,10 @@ To run docker container image
 
 # To test api
 
+List movies
+
     curl localhost:8080/movies
+
+Add movie
+
+    curl -v localhost:8080/movies -d '{"name": "Some movie"}

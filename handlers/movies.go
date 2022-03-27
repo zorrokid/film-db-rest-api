@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/zorrokid/film-db-rest-api/data"
+	"github.com/zorrokid/film-db-rest-api/data/models"
 )
 
 type Movies struct {
@@ -24,4 +25,12 @@ func (m *Movies) GetMovies(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(rw, "Unable to marshal JSON", http.StatusInternalServerError)
 	}
+}
+
+type KeyMovie struct{}
+
+func (m *Movies) AddMovie(rw http.ResponseWriter, r *http.Request) {
+	m.logger.Println("Handle POST movies")
+	movie := r.Context().Value(KeyMovie{}).(models.Movie)
+	m.repository.AddMovie(&movie)
 }
